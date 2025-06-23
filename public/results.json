@@ -1,0 +1,268 @@
+[
+    {
+        "timestamp": "2025-06-21T09:30:48.873Z",
+        "correct": 34,
+        "total": 40,
+        "score": "8.50",
+        "set": "4"
+    },
+    {
+        "timestamp": "2025-06-21T09:57:14.691Z",
+        "correct": 24,
+        "total": 40,
+        "score": "6.00",
+        "set": "5"
+    },
+    {
+        "timestamp": "2025-06-21T10:10:21.396Z",
+        "correct": 29,
+        "total": 40,
+        "score": "7.25",
+        "set": "6"
+    },
+    {
+        "timestamp": "2025-06-21T10:17:25.521Z",
+        "correct": 32,
+        "total": 40,
+        "score": "8.00",
+        "set": "7"
+    },
+    {
+        "timestamp": "2025-06-21T10:34:44.459Z",
+        "correct": 31,
+        "total": 40,
+        "score": "7.75",
+        "set": "8"
+    },
+    {
+        "timestamp": "2025-06-21T14:26:24.741Z",
+        "correct": 29,
+        "total": 36,
+        "score": "8.06",
+        "set": "9"
+    },
+    {
+        "timestamp": "2025-06-21T14:52:38.386Z",
+        "correct": 32,
+        "total": 40,
+        "score": "8.00",
+        "set": "8"
+    },
+    {
+        "timestamp": "2025-06-21T16:28:04.576Z",
+        "correct": 33,
+        "total": 40,
+        "score": "8.25",
+        "set": "7"
+    },
+    {
+        "timestamp": "2025-06-21T16:43:25.748Z",
+        "correct": 29,
+        "total": 40,
+        "score": "7.25",
+        "set": "6"
+    },
+    {
+        "timestamp": "2025-06-21T16:49:36.537Z",
+        "correct": 31,
+        "total": 40,
+        "score": "7.75",
+        "set": "5"
+    },
+    {
+        "timestamp": "2025-06-22T02:52:43.201Z",
+        "correct": 37,
+        "total": 40,
+        "score": "9.25",
+        "set": "5"
+    },
+    {
+        "timestamp": "2025-06-22T03:16:47.590Z",
+        "correct": 32,
+        "total": 40,
+        "score": "8.00",
+        "set": "6"
+    },
+    {
+        "timestamp": "2025-06-22T07:12:18.497Z",
+        "correct": 35,
+        "total": 40,
+        "score": "8.75",
+        "set": "8"
+    },
+    {
+        "timestamp": "2025-06-22T07:27:47.798Z",
+        "correct": 32,
+        "total": 40,
+        "score": "8.00",
+        "set": "6"
+    },
+    {
+        "timestamp": "2025-06-22T07:39:02.846Z",
+        "correct": 27,
+        "total": 40,
+        "score": "6.75",
+        "set": "4"
+    },
+    {
+        "timestamp": "2025-06-22T07:42:17.496Z",
+        "correct": 35,
+        "total": 40,
+        "score": "8.75",
+        "set": "4"
+    },
+    {
+        "timestamp": "2025-06-22T09:27:20.494Z",
+        "correct": 38,
+        "total": 40,
+        "score": "9.50",
+        "set": "2"
+    },
+    {
+        "timestamp": "2025-06-22T13:52:04.989Z",
+        "correct": 35,
+        "total": 40,
+        "score": "8.75",
+        "set": "0"
+    },
+    {
+        "timestamp": "2025-06-22T14:29:26.118Z",
+        "correct": 28,
+        "total": 40,
+        "score": "7.00",
+        "set": "1"
+    },
+    {
+        "timestamp": "2025-06-22T15:07:42.716Z",
+        "correct": 35,
+        "total": 40,
+        "score": "8.75",
+        "set": "1"
+    },
+    {
+        "timestamp": "2025-06-22T15:34:27.510Z",
+        "correct": 40,
+        "total": 40,
+        "score": "10.00",
+        "set": "0"
+    },
+    {
+        "timestamp": "2025-06-22T15:37:45.788Z",
+        "correct": 37,
+        "total": 40,
+        "score": "9.25",
+        "set": "1"
+    },
+    {
+        "timestamp": "2025-06-22T15:53:41.365Z",
+        "correct": 39,
+        "total": 40,
+        "score": "9.75",
+        "set": "2"
+    },
+    {
+        "timestamp": "2025-06-22T15:58:21.137Z",
+        "correct": 32,
+        "total": 40,
+        "score": "8.00",
+        "set": "3"
+    },
+    {
+        "timestamp": "2025-06-22T16:03:14.291Z",
+        "correct": 39,
+        "total": 40,
+        "score": "9.75",
+        "set": "3"
+    },
+    {
+        "timestamp": "2025-06-22T16:12:31.540Z",
+        "correct": 35,
+        "total": 40,
+        "score": "8.75",
+        "set": "4"
+    },
+    {
+        "timestamp": "2025-06-22T16:24:42.535Z",
+        "correct": 32,
+        "total": 40,
+        "score": "8.00",
+        "set": "4"
+    },
+    {
+        "timestamp": "2025-06-22T16:30:45.837Z",
+        "correct": 36,
+        "total": 40,
+        "score": "9.00",
+        "set": "5"
+    },
+    {
+        "timestamp": "2025-06-22T16:33:33.569Z",
+        "correct": 37,
+        "total": 40,
+        "score": "9.25",
+        "set": "4"
+    },
+    {
+        "timestamp": "2025-06-22T16:59:36.611Z",
+        "correct": 29,
+        "total": 40,
+        "score": "7.25",
+        "set": "6"
+    },
+    {
+        "timestamp": "2025-06-22T17:02:49.940Z",
+        "correct": 31,
+        "total": 40,
+        "score": "7.75",
+        "set": "7"
+    },
+    {
+        "timestamp": "2025-06-22T17:05:44.436Z",
+        "correct": 35,
+        "total": 40,
+        "score": "8.75",
+        "set": "6"
+    },
+    {
+        "timestamp": "2025-06-22T17:08:30.364Z",
+        "correct": 35,
+        "total": 40,
+        "score": "8.75",
+        "set": "7"
+    },
+    {
+        "timestamp": "2025-06-22T17:11:15.434Z",
+        "correct": 38,
+        "total": 40,
+        "score": "9.50",
+        "set": "6"
+    },
+    {
+        "timestamp": "2025-06-22T17:14:01.487Z",
+        "correct": 35,
+        "total": 40,
+        "score": "8.75",
+        "set": "7"
+    },
+    {
+        "timestamp": "2025-06-22T17:19:04.692Z",
+        "correct": 34,
+        "total": 40,
+        "score": "8.50",
+        "set": "8"
+    },
+    {
+        "timestamp": "2025-06-22T17:24:17.784Z",
+        "correct": 32,
+        "total": 36,
+        "score": "8.89",
+        "set": "9"
+    },
+    {
+        "timestamp": "2025-06-22T17:27:30.894Z",
+        "correct": 36,
+        "total": 40,
+        "score": "9.00",
+        "set": "7"
+    }
+]

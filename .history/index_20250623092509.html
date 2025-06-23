@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Quiz Exam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+      .correct {
+        background-color: #22c55e !important;
+      }
+      .wrong {
+        background-color: #ef4444 !important;
+      }
+      #question-text {
+        white-space: pre-wrap;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body class="bg-white font-sans">
+    <div class="bg-cyan-800 text-white p-2 flex justify-between text-sm">
+      <div>Xin chào, <strong>B21DCCN129 - Nguyễn Hải Yến</strong></div>
+      <div class="font-semibold">Thứ bảy, 21/6/2025</div>
+    </div>
+
+    <div class="text-center py-4">
+      <h1 class="text-xl font-bold">CMS_QuizExam</h1>
+      <p class="text-sm mt-2">
+        Bộ câu hỏi:
+        <select
+          id="question-set"
+          class="border rounded px-2 py-1 text-sm"
+          onchange="loadSet(this.value)"
+        ></select>
+      </p>
+    </div>
+
+    <div class="mx-10 border rounded-lg overflow-hidden">
+      <div class="bg-cyan-600 text-white text-sm font-bold p-2">
+        Câu hỏi <span id="current-question-number">1</span>
+      </div>
+      <div class="p-4">
+        <div id="question-text" class="font-semibold mb-3">Đang tải...</div>
+        <div class="space-y-2" id="answers"></div>
+      </div>
+    </div>
+
+    <div
+      class="flex flex-wrap justify-center gap-1 mt-6 px-4"
+      id="question-buttons"
+    >
+      <button class="bg-cyan-600 text-white px-3 py-1 rounded">&laquo;</button>
+      <button class="bg-cyan-600 text-white px-3 py-1 rounded">&raquo;</button>
+    </div>
+
+    <div class="text-center mt-6 text-lg font-bold" id="result-summary"></div>
+
+    <!-- Lịch sử -->
+    <div class="mx-10 mt-8">
+      <h2 class="text-lg font-bold mb-2">Lịch sử kết quả:</h2>
+      <table class="w-full text-sm border border-gray-300" id="history-table">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="border px-2 py-1">Thời gian</th>
+            <th class="border px-2 py-1">Bộ</th>
+            <th class="border px-2 py-1">Đúng</th>
+            <th class="border px-2 py-1">Tổng</th>
+            <th class="border px-2 py-1">Điểm</th>
+          </tr>
+        </thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </div>
+
+    <script>
+      let questionSets = [],
+        currentSet = [];
+      let currentAnswers = {},
+        buttons = [];
+      let currentQuestion = 1;
+      const questionText = document.getElementById("question-text");
+      const questionNumber = document.getElementById("current-question-number");
+      const answersDiv = document.getElementById("answers");
+      const select = document.getElementById("question-set");
+
+      async function fetchExcel() {
+        const res = await fetch("formatted_questions.xlsx");
+        const data = await res.arrayBuffer();
+        const wb = XLSX.read(data, { type: "array" });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+        for (let i = 0; i < json.length; i += 40) {
+          questionSets.push(json.slice(i, i + 40));
+        }
+
+        select.innerHTML = questionSets
+          .map((_, i) => `<option value="${i}">Bộ ${i + 1}</option>`)
+          .join("");
+        loadSet(0);
+      }
+
+      function parseQuestion(row) {
+        return {
+          question: row["Question Text"],
+          options: [
+            "A. " + row["Option 1"],
+            "B. " + row["Option 2"],
+            "C. " + row["Option 3"],
+            "D. " + row["Option 4"],
+          ],
+          correct: parseInt(row["Correct answer"]),
+        };
+      }
+
+      function loadSet(index) {
+        currentSet = questionSets[index].map(parseQuestion);
+        currentAnswers = {};
+        loadQuestion(1);
+        renderButtons();
+      }
+
+      function loadQuestion(num) {
+        currentQuestion = num;
+        const q = currentSet[num - 1];
+        if (!q) return;
+
+        questionNumber.textContent = num;
+        questionText.textContent = q.question;
+        answersDiv.innerHTML = "";
+
+        q.options.forEach((opt, idx) => {
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = "answer";
+          input.className = "mr-2";
+          input.disabled = !!currentAnswers[num];
+          input.value = idx + 1;
+          input.onclick = () => handleAnswer(num, idx + 1);
+
+          const label = document.createElement("label");
+          label.innerHTML = opt;
+          label.prepend(input);
+
+          if (currentAnswers[num]) {
+            if (q.correct === idx + 1) label.innerHTML += " ✅";
+            else if (currentAnswers[num] === idx + 1) label.innerHTML += " ❌";
+          }
+
+          answersDiv.appendChild(label);
+          answersDiv.appendChild(document.createElement("br"));
+        });
+      }
+
+      function renderButtons() {
+        const container = document.getElementById("question-buttons");
+        buttons = [];
+        container.innerHTML = "";
+
+        // Nút Previous <<
+        const prevBtn = document.createElement("button");
+        prevBtn.textContent = "«";
+        prevBtn.className =
+          "bg-cyan-600 text-white px-3 py-1 rounded hover:bg-cyan-700";
+        prevBtn.onclick = () => {
+          if (currentQuestion > 1) loadQuestion(currentQuestion - 1);
+        };
+        container.appendChild(prevBtn);
+
+        // Các nút số
+        for (let i = 1; i <= currentSet.length; i++) {
+          const btn = document.createElement("button");
+          btn.className =
+            "bg-cyan-600 text-white px-3 py-1 rounded hover:bg-cyan-700";
+          btn.textContent = i;
+          btn.onclick = () => loadQuestion(i);
+          container.appendChild(btn);
+          buttons.push(btn);
+        }
+
+        // Nút Next >>
+        const nextBtn = document.createElement("button");
+        nextBtn.textContent = "»";
+        nextBtn.className =
+          "bg-cyan-600 text-white px-3 py-1 rounded hover:bg-cyan-700";
+        nextBtn.onclick = () => {
+          if (currentQuestion < currentSet.length)
+            loadQuestion(currentQuestion + 1);
+        };
+        container.appendChild(nextBtn);
+      }
+
+      function handleAnswer(qNum, selected) {
+        if (currentAnswers[qNum]) return;
+
+        const correct = currentSet[qNum - 1].correct;
+        currentAnswers[qNum] = selected;
+
+        const btn = buttons[qNum - 1];
+        btn.classList.remove("bg-cyan-600");
+        btn.classList.add(selected === correct ? "correct" : "wrong");
+
+        loadQuestion(qNum);
+
+        if (Object.keys(currentAnswers).length === currentSet.length) {
+          showResult();
+        }
+      }
+
+      function showResult() {
+        const correct = Object.entries(currentAnswers).filter(([i, val]) => {
+          return currentSet[i - 1].correct === val;
+        }).length;
+
+        const score10 = ((correct / currentSet.length) * 10).toFixed(2);
+        const result = `Bạn đúng ${correct}/${currentSet.length} câu - Điểm: ${score10}/10`;
+        document.getElementById("result-summary").textContent = result;
+
+        saveToServer({
+          timestamp: new Date().toISOString(),
+          correct,
+          total: currentSet.length,
+          score: score10,
+          set: select.value,
+        });
+      }
+
+      function saveToServer(data) {
+        fetch("/api/save_result", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+      }
+
+      function fetchHistory() {
+        fetch("results.json")
+          .then((res) => res.json())
+          .then((data) => {
+            const tbody = document.getElementById("history-body");
+            tbody.innerHTML = "";
+
+            data.reverse().forEach((entry) => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+              <td class="border px-2 py-1">${new Date(
+                entry.timestamp
+              ).toLocaleString("vi-VN")}</td>
+              <td class="border px-2 py-1">Bộ ${parseInt(entry.set) + 1}</td>
+              <td class="border px-2 py-1 text-center">${entry.correct}</td>
+              <td class="border px-2 py-1 text-center">${entry.total}</td>
+              <td class="border px-2 py-1 text-center font-semibold">${
+                entry.score
+              }</td>
+            `;
+              tbody.appendChild(tr);
+            });
+          })
+          .catch((err) => console.error("Không thể tải lịch sử:", err));
+      }
+
+      window.onload = () => {
+        fetchExcel();
+        fetchHistory();
+      };
+    </script>
+  </body>
+</html>
