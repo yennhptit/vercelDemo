@@ -17,6 +17,9 @@
         max-height: 300px;
         overflow-y: auto;
       }
+      .whitespace-pre-wrap {
+        white-space: pre-wrap;
+      }
     </style>
   </head>
   <body class="bg-white font-sans">
@@ -27,29 +30,28 @@
 
     <div class="text-center py-4">
       <h1 class="text-xl font-bold">CMS_QuizExam</h1>
-      <p class="text-sm mt-2">
-        Bộ câu hỏi:
+
+      <div class="mt-2">
+        <label class="text-sm font-semibold mr-2">Bộ câu hỏi:</label>
         <select
           id="question-set"
           class="border rounded px-2 py-1 text-sm"
           onchange="loadSet(this.value)"
         ></select>
-      </p>
-      <p class="text-sm mt-2">
-        Chế độ:
+
+        <label class="ml-4 text-sm font-semibold mr-2">Chế độ:</label>
         <select
           id="mode-select"
-          class="border rounded px-2 py-1 text-sm ml-2"
-          onchange="changeMode(this.value)"
+          class="border rounded px-2 py-1 text-sm"
+          onchange="changeMode()"
         >
           <option value="test">Test</option>
           <option value="answered">Answered</option>
         </select>
-      </p>
+      </div>
     </div>
 
-    <!-- Chế độ Test -->
-    <div id="test-mode" class="mx-10 border rounded-lg overflow-hidden">
+    <div class="mx-10 border rounded-lg overflow-hidden" id="question-box">
       <div class="bg-cyan-600 text-white text-sm font-bold p-2">
         Câu hỏi <span id="current-question-number">1</span>
       </div>
@@ -63,25 +65,22 @@
       class="flex flex-wrap justify-center gap-1 mt-6 px-4"
       id="question-buttons"
     ></div>
-    <div class="text-center mt-6 text-lg font-bold" id="result-summary"></div>
 
-    <!-- Chế độ Answered -->
-    <div id="answered-mode" class="mx-10 mt-6" style="display: none">
-      <div id="all-questions"></div>
-    </div>
+    <div class="text-center mt-6 text-lg font-bold" id="result-summary"></div>
 
     <script>
       let questionSets = [],
-        currentSet = [],
-        currentAnswers = {},
-        buttons = [],
-        currentQuestion = 1,
+        currentSet = [];
+      let currentAnswers = {},
+        buttons = [];
+      let currentQuestion = 1,
         currentMode = "test";
 
       const questionText = document.getElementById("question-text");
       const questionNumber = document.getElementById("current-question-number");
       const answersDiv = document.getElementById("answers");
       const select = document.getElementById("question-set");
+      const questionBox = document.getElementById("question-box");
 
       async function fetchExcel() {
         try {
@@ -121,15 +120,22 @@
       function loadSet(index) {
         currentSet = questionSets[index].map(parseQuestion);
         currentAnswers = {};
+        document.getElementById("result-summary").textContent = "";
         if (currentMode === "test") {
-          document.getElementById("test-mode").style.display = "block";
-          document.getElementById("answered-mode").style.display = "none";
+          questionBox.style.display = "block";
+          document.getElementById("question-buttons").style.display = "flex";
           loadQuestion(1);
           renderButtons();
-          document.getElementById("result-summary").textContent = "";
         } else {
+          questionBox.style.display = "none";
+          document.getElementById("question-buttons").style.display = "none";
           showAllAnswered();
         }
+      }
+
+      function changeMode() {
+        currentMode = document.getElementById("mode-select").value;
+        loadSet(select.value);
       }
 
       function loadQuestion(num) {
@@ -146,22 +152,21 @@
           input.type = "radio";
           input.name = "answer";
           input.className = "mr-2";
-          input.value = idx + 1;
           input.disabled = !!currentAnswers[num];
+          input.value = idx + 1;
           input.onclick = () => handleAnswer(num, idx + 1);
 
           const label = document.createElement("label");
           label.innerHTML = opt;
-          label.className = "block p-1 rounded";
           label.prepend(input);
 
           if (currentAnswers[num]) {
-            if (q.correct === idx + 1) label.classList.add("correct");
-            else if (currentAnswers[num] === idx + 1)
-              label.classList.add("wrong");
+            if (q.correct === idx + 1) label.innerHTML += " ✅";
+            else if (currentAnswers[num] === idx + 1) label.innerHTML += " ❌";
           }
 
           answersDiv.appendChild(label);
+          answersDiv.appendChild(document.createElement("br"));
         });
       }
 
@@ -202,6 +207,7 @@
 
       function handleAnswer(qNum, selected) {
         if (currentAnswers[qNum]) return;
+
         const correct = currentSet[qNum - 1].correct;
         currentAnswers[qNum] = selected;
 
@@ -210,63 +216,54 @@
         btn.classList.add(selected === correct ? "correct" : "wrong");
 
         loadQuestion(qNum);
-        if (Object.keys(currentAnswers).length === currentSet.length)
+
+        if (Object.keys(currentAnswers).length === currentSet.length) {
           showResult();
+        }
       }
 
       function showResult() {
-        const correct = Object.entries(currentAnswers).filter(
-          ([i, val]) => currentSet[i - 1].correct === val
-        ).length;
+        const correct = Object.entries(currentAnswers).filter(([i, val]) => {
+          return currentSet[i - 1].correct === val;
+        }).length;
+
         const score10 = ((correct / currentSet.length) * 10).toFixed(2);
         const result = `Bạn đúng ${correct}/${currentSet.length} câu - Điểm: ${score10}/10`;
         document.getElementById("result-summary").textContent = result;
       }
 
-      function changeMode(mode) {
-        currentMode = mode;
-        if (currentMode === "test") {
-          document.getElementById("test-mode").style.display = "block";
-          document.getElementById("answered-mode").style.display = "none";
-          loadSet(select.value);
-        } else {
-          document.getElementById("test-mode").style.display = "none";
-          document.getElementById("answered-mode").style.display = "block";
-          showAllAnswered();
-        }
-      }
-
       function showAllAnswered() {
-        const container = document.getElementById("all-questions");
+        const container = document.getElementById("question-buttons");
         container.innerHTML = "";
 
-        currentSet.forEach((q, index) => {
-          const block = document.createElement("div");
-          block.className = "mb-4 border-b pb-3";
+        const result = currentSet.map((q, index) => {
+          const div = document.createElement("div");
+          div.className = "border p-4 m-2 rounded bg-gray-100";
 
-          const title = document.createElement("h3");
-          title.className = "font-semibold text-cyan-700";
-          title.textContent = `Câu ${index + 1}: ${q.question}`;
-          block.appendChild(title);
+          const title = document.createElement("div");
+          title.className = "font-semibold text-cyan-700 whitespace-pre-wrap";
+          title.textContent = `Câu ${index + 1}:\n${q.question}`;
+          div.appendChild(title);
 
           q.options.forEach((opt, idx) => {
-            const div = document.createElement("div");
-            div.className = "ml-4 mt-1";
-
-            const label = document.createElement("label");
+            const label = document.createElement("div");
             label.textContent = opt;
-            if (idx + 1 === q.correct) {
-              label.className =
-                "correct px-2 py-1 inline-block rounded text-white";
-              label.textContent += " ✅";
+            if (q.correct === idx + 1) {
+              label.innerHTML += " ✅";
+              label.classList.add("text-green-600", "font-bold");
             }
-
             div.appendChild(label);
-            block.appendChild(div);
           });
 
-          container.appendChild(block);
+          return div;
         });
+
+        const answersDiv = document.getElementById("answers");
+        answersDiv.innerHTML = "";
+        result.forEach((el) => answersDiv.appendChild(el));
+
+        questionNumber.textContent = "-";
+        questionText.textContent = "Đáp án đúng cho toàn bộ bộ đề.";
       }
 
       window.onload = fetchExcel;
